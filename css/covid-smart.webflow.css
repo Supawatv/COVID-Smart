@@ -3,8 +3,6 @@
   padding-right: 2.5vw;
   padding-left: 2.5vw;
   background-color: #e3edfb;
-  /* background-image: -webkit-gradient(linear, left top, left bottom, from(#f0f5fc), to(#e3edfb)); */
-  /* background-image: linear-gradient(180deg, #f0f5fc, #e3edfb); */
   box-shadow: 1px 1px 3px 0 #000;
   font-family: 'Varela Round', sans-serif;
 }
@@ -279,6 +277,15 @@
 
 .link {
   color: #000;
+}
+
+@media screen and (max-width: 767px) {
+  .form {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+  }
 }
 
 @media screen and (max-width: 479px) {

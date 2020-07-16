@@ -69,39 +69,40 @@ function sort_score(rev_data) {
 // HTML TEMPLATES
 const data_header =
 	`
-      <!-- Data Header -->
-      <div id="data_header" class="data-table w-row">
-        <div class="w-col w-col-5">
+	<div id="data_header" class="data-table w-row">
+        <div class="w-col w-col-5 w-col-small-5 w-col-tiny-5">
           <h5 class="data-guide">Country Ranking</h5>
         </div>
-        <div class="col2 w-col w-col-1"></div>
-        <div class="w-col w-col-2">
+        <div class="col2 w-col w-col-1 w-col-small-1 w-col-tiny-1"></div>
+        <div class="w-col w-col-2 w-col-small-2 w-col-tiny-2">
           <h5 class="data-guide">Infections Per Million</h5>
         </div>
-        <div class="w-col w-col-1"></div>
-        <div class="w-col w-col-2">
+        <div class="w-col w-col-1 w-col-small-1 w-col-tiny-1"></div>
+        <div class="w-col w-col-2 w-col-small-2 w-col-tiny-2">
           <h5 class="data-guide">Deaths Per Million</h5>
         </div>
-        <div class="w-col w-col-1"></div>
-      </div>`
+        <div class="w-col w-col-1 w-col-small-1 w-col-tiny-1"></div>
+      </div>
+	`
 
 const data_row =
 	`
       <!-- Data Row (Odd) Sample -->
-      <div class="data_row w-row |ODD|">
-        <div class="w-col w-col-5">
+      <div id="|COUNTRY|" class="data_row w-row |ODD|">
+        <div class="w-col w-col-5 w-col-small-5 w-col-tiny-5">
           <h2>|RANKING| – |FLAG| |COUNTRY|</h2>
         </div>
-        <div class="col2 w-col w-col-1"></div>
-        <div class="w-col w-col-2">
+        <div class="col2 w-col w-col-1 w-col-small-1 w-col-tiny-1"></div>
+        <div class="w-col w-col-2 w-col-small-2 w-col-tiny-2">
           <h2>|INFECTION|</h2>
         </div>
-        <div class="w-col w-col-1"></div>
-        <div class="w-col w-col-2">
+        <div class="w-col w-col-1 w-col-small-1 w-col-tiny-1"></div>
+        <div class="w-col w-col-2 w-col-small-2 w-col-tiny-2">
           <h2>|DEATH|</h2>
         </div>
-        <div class="w-col w-col-1"></div>
-      </div>`
+        <div class="w-col w-col-1 w-col-small-1 w-col-tiny-1"></div>
+      </div>
+      `
 
 
 // Setup
@@ -113,12 +114,7 @@ function setup() {
 	});
 
 	// Scroll
-	$("#search_button").click(function() {
-		console.log("Scrolling...")
-		$('html, body').animate({
-			scrollTop: $("#footer").offset().top
-		}, 2000);
-	});
+	attach_search();
 }
 
 
@@ -132,6 +128,7 @@ function generate_vis() {
 		row = data_row;
 		// Replace placeholder with actual data
 		row = row.replace("|RANKING|", rank);
+		row = row.replace("|COUNTRY|", kill_space(rev_data[i].country));
 		row = row.replace("|COUNTRY|", rev_data[i].country);
 		row = row.replace("|INFECTION|", Math.round((rev_data[i].stat).total_cases_per_million)
 			.toLocaleString());
@@ -151,4 +148,58 @@ function generate_vis() {
 		all += row;
 	}
 	return all;
+}
+
+
+function kill_space(str) {
+	str = str.replace(/ /g, "_");
+	return str
+}
+
+function add_space(str) {
+	str = str.replace(/_/g, " ");
+	return str
+}
+
+// Find and highlight search input
+function find() {
+	query = document.getElementById("search_box").value;
+	query = common_alias(query);
+	query = kill_space(query);
+	// Highlight and Scroll
+	$("#" + query).css("background-color", "yellow");
+	$('html, body').animate({
+		scrollTop: $("#" + query).offset().top
+	}, 2000);
+}
+
+// Attach event listener for quick search
+function attach_search() {
+	// Press Search
+	$("#search_button").click(function() {
+		find();
+	});
+	// Press enter
+	$(document).on('keypress', function(e) {
+		if (e.which == 13) {
+			find();
+		}
+	});
+}
+
+
+function common_alias(query) {
+	if (query == "USA") {
+		query = "United States of America"
+	};
+	if (query == "USA") {
+		query = "United States"
+	};
+	if (query == "US") {
+		query = "United States"
+	};
+	if (query == "United State") {
+		query = "United States"
+	};
+	return query;
 }
